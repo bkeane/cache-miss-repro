@@ -62,5 +62,5 @@ jobs:
       - name: layers
         id: layers
         run: |
-          dive test:test --json > dive.json
+          dive test:test --json dive.json
           aws s3 cp dive.json s3://kaixo-buildx-cache/dive.json
