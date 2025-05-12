@@ -1,0 +1,56 @@
+name: repro
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  repro:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      WORKING_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: assume role
+        id: assume-role
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::677771948337:role/cache-miss-repro-role
+          role-session-name: assume-role-session
+          aws-region: us-west-2
+
+      - name: install dive
+        id: install-dive
+        run: |
+          DIVE_VERSION=$(curl -sL "https://api.github.com/repos/wagoodman/dive/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+          curl -fOL "https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.deb"
+          sudo apt install ./dive_${DIVE_VERSION}_linux_amd64.deb
+
+      - name: install buildx
+        id: install-buildx
+        uses: docker/setup-buildx-action@v3 
+        with:
+          version: v0.23.0
+
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.WORKING_SHA }}
+
+      - name: build
+        id: build
+        run: |
+          SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct) \
+          docker buildx bake --progress=plain --load
+
+      - name: layers
+        id: layers
+        run: |
+          dive test:test --json > dive.json
+          aws s3 cp dive.json s3://kaixo-buildx-cache/dive.json
