@@ -57,7 +57,7 @@ jobs:
         id: build
         run: |
           SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct) \
-          docker buildx bake --progress=plain --load
+          docker buildx bake read-write --progress=plain --load
 
       - name: layers
         id: layers
