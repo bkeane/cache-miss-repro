@@ -29,6 +29,17 @@ jobs:
           curl -fOL "https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_arm64.deb"
           sudo apt install ./dive_0.13.1_linux_arm64.deb
 
+      - name: setup containerd
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+
       - name: install buildx
         id: install-buildx
         uses: docker/setup-buildx-action@v3 
