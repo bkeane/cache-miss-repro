@@ -1,10 +1,7 @@
 build:
+    EPOCH=0 \
     NOW=$(date +%s) \
     docker buildx bake build
-
-release:
-    NOW=$(date +%s) \
-    docker buildx bake release
 
 clean:
     docker system prune -f -a
