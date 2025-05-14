@@ -23,12 +23,6 @@ jobs:
           role-session-name: assume-role-session
           aws-region: us-west-2
 
-      # - name: install dive
-      #   id: install-dive
-      #   run: |
-      #     curl -fOL "https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_arm64.deb"
-      #     sudo apt install ./dive_0.13.1_linux_arm64.deb
-
       - name: setup containerd
         uses: docker/setup-docker-action@v4
         with:
@@ -56,13 +50,5 @@ jobs:
       - name: build
         id: build
         run: |
-          # EPOCH=$(git log -1 --pretty=%ct) \
-          EPOCH=0 \
-          TAG=test:test \
-          docker buildx bake read-write --progress=plain --load
-
-      # - name: layers
-      #   id: layers
-      #   run: |
-      #     dive test:test --json dive.json
-      #     aws s3 cp dive.json s3://kaixo-buildx-cache/dive.json
+          NOW=$(date +%s) \
+          docker buildx bake release --progress=plain

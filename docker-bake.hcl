@@ -2,22 +2,29 @@ group "default" {
   targets = ["read-only"]
 }
 
-variable "TAG" {
+variable "RELEASE_TAG" {
   description = "Image tag to use for output"
+  default = "test:release"
 }
 
-variable "EPOCH" {
-  description = "Source date epoch to use for output"
+variable "BUILD_TAG" {
+  description = "Image tag to use for output"
+  default = "test:build"
 }
 
-target "read-only" {
-  context = "src"
+variable "NOW" {
+  description = "Current timestamp"
+}
+
+target "build" {
+  context = "."
   platforms = ["linux/amd64", "linux/arm64"]
-  tag = [TAG]
+  tag = [BUILD_TAG]
+  load = true
 
   output = [
-    "type=image,name=${TAG},rewrite-timestamp=true",
-    "type=docker,name=${TAG}"
+    "type=image,name=${BUILD_TAG},rewrite-timestamp=true",
+    "type=docker,name=${BUILD_TAG}"
   ]
   
   cache-from = [{
@@ -27,14 +34,6 @@ target "read-only" {
     name = "repro"
   }]
 
-  args = {
-    SOURCE_DATE_EPOCH = "${EPOCH}"
-  }
-}
-
-target "read-write" {
-  inherits = ["read-only"]
-
   cache-to = [{
     type = "s3"
     region = "us-west-2"
@@ -42,4 +41,26 @@ target "read-write" {
     name = "repro"
     mode = "max"
   }]
+
+  args = {
+    SOURCE_DATE_EPOCH = "0"
+  }
+}
+
+target "release" {
+  contexts = {
+    build = "target:build"
+  }
+
+  inherits = ["build"]
+  tag = [RELEASE_TAG]
+  load = true
+  output = [
+    "type=image,name=${RELEASE_TAG}",
+    "type=docker,name=${RELEASE_TAG}"
+  ]
+
+  args = {
+    SOURCE_DATE_EPOCH = "${NOW}"
+  }
 }
