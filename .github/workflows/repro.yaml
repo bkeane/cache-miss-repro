@@ -51,7 +51,7 @@ jobs:
       - name: export
         id: export
         run: |
-          aws s3 cp .cache s3://kaixo-buildx-cache/.cache/
+          aws s3 cp --recursive .cache s3://kaixo-buildx-cache/.cache/
 
       # - name: layers
       #   id: layers
