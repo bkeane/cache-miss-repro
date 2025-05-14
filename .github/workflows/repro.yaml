@@ -56,7 +56,8 @@ jobs:
       - name: build
         id: build
         run: |
-          EPOCH=$(git log -1 --pretty=%ct) \
+          # EPOCH=$(git log -1 --pretty=%ct) \
+          EPOCH=0 \
           TAG=test:test \
           docker buildx bake read-write --progress=plain --load
 
