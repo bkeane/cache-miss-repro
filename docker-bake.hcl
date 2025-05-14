@@ -7,15 +7,16 @@ variable "TAG" {
   default = "test:test"
 }
 
-variable "SOURCE_DATE_EPOCH" {
+variable "EPOCH" {
   description = "Source date epoch to use for output"
   default = "0"
 }
 
 target "read-only" {
-  context = "."
+  context = "src"
   platforms = ["linux/amd64", "linux/arm64"]
-  tag = ["${TAG}"]
+  tag = [TAG]
+
   output = [
     "type=image,name=${TAG},rewrite-timestamp=true",
     "type=docker,name=${TAG}"
@@ -29,7 +30,7 @@ target "read-only" {
   }]
 
   args = {
-    SOURCE_DATE_EPOCH = "${SOURCE_DATE_EPOCH}"
+    SOURCE_DATE_EPOCH = "${EPOCH}"
   }
 }
 
