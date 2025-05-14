@@ -4,12 +4,10 @@ group "default" {
 
 variable "TAG" {
   description = "Image tag to use for output"
-  default = "test:test"
 }
 
 variable "EPOCH" {
   description = "Source date epoch to use for output"
-  default = "0"
 }
 
 target "read-only" {
