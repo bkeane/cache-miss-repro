@@ -52,7 +52,6 @@ target "release" {
     build = "target:build"
   }
 
-  inherits = ["build"]
   tag = [RELEASE_TAG]
   load = true
   output = [
