@@ -13,7 +13,7 @@ variable "EPOCH" {
 }
 
 target "read-only" {
-  context = "src"
+  context = "."
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [TAG]
 
