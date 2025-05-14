@@ -1,45 +1,32 @@
-group "default" {
-  targets = ["read-only"]
-}
-
 variable "TAG" {
   description = "Image tag to use for output"
 }
 
-variable "EPOCH" {
-  description = "Source date epoch to use for output"
-}
-
-target "read-only" {
-  context = "src"
+target "build" {
+  context = "."
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [TAG]
 
   output = [
-    "type=image,name=${TAG},rewrite-timestamp=true",
-    "type=docker,name=${TAG}"
+    "type=image,name=${TAG}",
   ]
-  
-  cache-from = [{
-    type = "s3"
-    region = "us-west-2"
-    bucket = "kaixo-buildx-cache"
-    name = "repro"
-  }]
-
-  args = {
-    SOURCE_DATE_EPOCH = "${EPOCH}"
-  }
 }
 
-target "read-write" {
-  inherits = ["read-only"]
+target "to" {
+  inherits = ["build"]
 
   cache-to = [{
-    type = "s3"
-    region = "us-west-2"
-    bucket = "kaixo-buildx-cache"
-    name = "repro"
-    mode = "max"
+    type = "local"
+    dest = ".cache"
+    ignore-error=true
+  }]
+}
+
+target "from" {
+  inherits = ["build"]
+
+  cache-from = [{
+    type = "local"
+    src = ".cache"
   }]
 }

@@ -1,15 +1,25 @@
-write:
+to:
     EPOCH=$(git log -1 --pretty=%ct) \
     TAG=test:test \
-    docker buildx bake read-write --progress=plain --load
+    docker buildx bake to --builder=builder-1
 
-read:
+from:
     EPOCH=$(git log -1 --pretty=%ct) \
     TAG=test:test \
-    docker buildx bake read-only --progress=plain --load
+    docker buildx bake from --builder=builder-2
 
 bust:
-    aws s3 rm --recursive s3://kaixo-buildx-cache/
+    rm -rf .cache
 
-ls:
-    aws s3 ls s3://kaixo-buildx-cache/
+clean:
+    docker system prune -f -a
+    docker image prune -f -a
+    docker buildx prune -f -a
+
+up:
+    docker buildx create --driver=docker-container --name=builder-1
+    docker buildx create --driver=docker-container --name=builder-2
+
+down:
+    docker buildx rm builder-1
+    docker buildx rm builder-2
