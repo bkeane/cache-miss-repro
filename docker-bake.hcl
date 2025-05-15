@@ -7,24 +7,15 @@ variable "TAG" {
   default = "test:build"
 }
 
-variable "EPOCH" {
-  description = "Epoch timestamp"
-  default = "0"
-}
-
-variable "NOW" {
-  description = "Current timestamp"
-}
-
 target "build" {
   context = "src"
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [TAG]
   load = true
-
+  
   output = [
-    "type=image,name=${TAG},rewrite-timestamp=true",
-    "type=docker,name=${TAG},rewrite-timestamp=true",
+    "type=image,name=repro,rewrite-timestamp=true",
+    "type=docker,name=repro,rewrite-timestamp=true",
   ]
 
   cache-to = [{
@@ -43,7 +34,7 @@ target "build" {
   }]
 
   args = {
-    SOURCE_DATE_EPOCH = "${EPOCH}"
+    SOURCE_DATE_EPOCH = "0"
   }
 }
 
