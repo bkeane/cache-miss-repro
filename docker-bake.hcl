@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["build", "release"]
+  targets = ["build"]
 }
 
 variable "BUILD_TAG" {
@@ -23,6 +23,8 @@ variable "NOW" {
 
 target "build" {
   context = "src"
+  target = "build"
+
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [BUILD_TAG]
   load = true
@@ -53,10 +55,11 @@ target "build" {
 }
 
 target "release" {
-  dockerfile = "src/Dockerfile"
+  context = "src"
   contexts = {
     build = "target:build"
   }
+
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [RELEASE_TAG]
   load = true

@@ -51,4 +51,4 @@ jobs:
         id: build
         run: |
           NOW=$(date +%s) \
-          docker buildx bake build --progress=plain --load
+          docker buildx bake --progress=plain
