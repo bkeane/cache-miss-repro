@@ -1,15 +1,10 @@
 group "default" {
-  targets = ["build", "release"]
+  targets = ["build"]
 }
 
-variable "BUILD_TAG" {
+variable "TAG" {
   description = "Image tag to use for output"
   default = "test:build"
-}
-
-variable "RELEASE_TAG" {
-  description = "Image tag to use for output"
-  default = "test:release"
 }
 
 variable "EPOCH" {
@@ -23,15 +18,13 @@ variable "NOW" {
 
 target "build" {
   context = "src"
-  target = "build"
-
   platforms = ["linux/amd64", "linux/arm64"]
-  tag = [BUILD_TAG]
+  tag = [TAG]
   load = true
 
   output = [
-    "type=image,name=${BUILD_TAG},rewrite-timestamp=true",
-    "type=docker,name=${BUILD_TAG},rewrite-timestamp=true",
+    "type=image,name=${TAG},rewrite-timestamp=true",
+    "type=docker,name=${TAG},rewrite-timestamp=true",
   ]
 
   cache-to = [{
@@ -54,24 +47,4 @@ target "build" {
   }
 }
 
-target "release" {
-  target = "release"
-  context = "src"
-  contexts = {
-    build = "target:build"
-  }
-
-  platforms = ["linux/amd64", "linux/arm64"]
-  tag = [RELEASE_TAG]
-  load = true
-
-  output = [
-    "type=image,name=${RELEASE_TAG},rewrite-timestamp=true",
-    "type=docker,name=${RELEASE_TAG},rewrite-timestamp=true",
-  ]
-
-  args = {
-    SOURCE_DATE_EPOCH = "${NOW}"
-  }
-}
 

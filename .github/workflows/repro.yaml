@@ -50,7 +50,6 @@ jobs:
       - name: build
         id: build
         run: |
-          NOW=$(date +%s) \
           docker buildx bake --progress=plain --load
 
       - name: images
