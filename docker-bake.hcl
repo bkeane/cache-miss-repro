@@ -7,12 +7,16 @@ variable "TAG" {
   default = "test:build"
 }
 
+variable "EPOCH" {
+  description = "Epoch timestamp"
+}
+
 target "build" {
   context = "src"
   platforms = ["linux/amd64", "linux/arm64"]
   tag = [TAG]
   load = true
-  
+
   output = [
     "type=image,name=repro,rewrite-timestamp=true",
     "type=docker,name=repro,rewrite-timestamp=true",
@@ -34,7 +38,7 @@ target "build" {
   }]
 
   args = {
-    SOURCE_DATE_EPOCH = "0"
+    SOURCE_DATE_EPOCH = "${EPOCH}"
   }
 }
 
