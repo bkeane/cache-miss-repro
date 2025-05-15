@@ -51,4 +51,9 @@ jobs:
         id: build
         run: |
           NOW=$(date +%s) \
-          docker buildx bake --progress=plain
+          docker buildx bake --progress=plain --load
+
+      - name: images
+        id: images
+        run: |
+          docker images

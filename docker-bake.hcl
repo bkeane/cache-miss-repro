@@ -55,6 +55,7 @@ target "build" {
 }
 
 target "release" {
+  target = "release"
   context = "src"
   contexts = {
     build = "target:build"
@@ -65,8 +66,8 @@ target "release" {
   load = true
 
   output = [
-    "type=image,name=${RELEASE_TAG}",
-    "type=docker,name=${RELEASE_TAG}",
+    "type=image,name=${RELEASE_TAG},rewrite-timestamp=true",
+    "type=docker,name=${RELEASE_TAG},rewrite-timestamp=true",
   ]
 
   args = {
