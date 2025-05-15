@@ -1,10 +1,20 @@
+group "default" {
+  targets = ["build", "release"]
+}
+
 variable "BUILD_TAG" {
   description = "Image tag to use for output"
   default = "test:build"
 }
 
+variable "RELEASE_TAG" {
+  description = "Image tag to use for output"
+  default = "test:release"
+}
+
 variable "EPOCH" {
-  description = "Current timestamp"
+  description = "Epoch timestamp"
+  default = "0"
 }
 
 variable "NOW" {
@@ -39,6 +49,25 @@ target "build" {
 
   args = {
     SOURCE_DATE_EPOCH = "${EPOCH}"
+  }
+}
+
+target "release" {
+  dockerfile = "src/Dockerfile"
+  contexts = {
+    build = "target:build"
+  }
+  platforms = ["linux/amd64", "linux/arm64"]
+  tag = [RELEASE_TAG]
+  load = true
+
+  output = [
+    "type=image,name=${RELEASE_TAG}",
+    "type=docker,name=${RELEASE_TAG}",
+  ]
+
+  args = {
+    SOURCE_DATE_EPOCH = "${NOW}"
   }
 }
 

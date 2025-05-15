@@ -1,7 +1,8 @@
-build:
-    EPOCH=0 \
-    NOW=$(date +%s) \
-    docker buildx bake build
+export EPOCH := "0"
+export NOW := `date +%s`
+
+default:
+    docker buildx bake --progress=plain
 
 clean:
     docker system prune -f -a
