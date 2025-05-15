@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["build"]
+  targets = ["build", "release"]
 }
 
 variable "BUILD_TAG" {
