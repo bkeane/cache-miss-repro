@@ -41,6 +41,10 @@ jobs:
           version: v0.23.0
           platforms: linux/arm64,linux/amd64
 
+      - name: install just
+        id: install-just
+        uses: extractions/setup-just@v3
+
       - name: checkout
         id: checkout
         uses: actions/checkout@v4
@@ -51,9 +55,5 @@ jobs:
       - name: build
         id: build
         run: |
-          docker buildx bake --progress=plain --load
+          just
 
-      - name: images
-        id: images
-        run: |
-          docker images
