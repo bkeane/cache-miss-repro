@@ -1,9 +1,9 @@
 # export EPOCH := `git log -1 --pretty=%ct`
-export EPOCH := "0"
-export NOW := `date +%s`
+# export EPOCH := "0"
+# export NOW := `date +%s`
 
 default:
-    docker buildx bake --progress=plain --load
+    docker buildx bake --progress=plain
 
 clean:
     docker system prune -f -a
