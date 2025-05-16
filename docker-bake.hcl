@@ -15,15 +15,18 @@ target "build" {
     arch = ["amd64", "arm64"]
   }
 
+  load = true
+
   name = "${arch}"
   context = "src"
   platforms = ["linux/${arch}"]
   output = [
     "type=image,name=${arch},rewrite-timestamp=true",
+    "type=docker,name=${arch},rewrite-timestamp=true",
   ]
 
   args = {
-    SOURCE_DATE_EPOCH = "${COMMIT_TIMESTAMP}"
+    SOURCE_DATE_EPOCH = "0"
   }
 
   cache-to = [{

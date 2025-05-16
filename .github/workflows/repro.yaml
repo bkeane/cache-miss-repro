@@ -39,7 +39,7 @@ jobs:
         uses: docker/setup-buildx-action@v3 
         with:
           version: v0.23.0
-          platforms: linux/arm64,linux/amd64
+          user: false
 
       - name: install just
         id: install-just
@@ -51,6 +51,11 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ env.WORKING_SHA }}
+
+      - name: builder up
+        id: builder-up
+        run: |
+          just up
 
       - name: build
         id: build

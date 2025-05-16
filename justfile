@@ -20,7 +20,7 @@ ls:
 up: 
     docker buildx create \
     --driver=docker-container \
-    --driver-opt="--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host" \
+    --buildkitd-flags="--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host" \
     --name=container-builder \
     --platform=linux/arm64,linux/amd64 \
     --bootstrap --use
