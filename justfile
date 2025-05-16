@@ -1,4 +1,5 @@
-export EPOCH := `git log -1 --pretty=%ct`
+# export EPOCH := `git log -1 --pretty=%ct`
+export EPOCH := "0"
 export NOW := `date +%s`
 
 default:
