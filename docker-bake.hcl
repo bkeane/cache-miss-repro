@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["release"]
+  targets = ["build"]
 }
 
 variable "BUILD_TAG" {
@@ -22,21 +22,26 @@ variable "NOW" {
 }
 
 target "build" {
+  matrix = {
+    arch = ["amd64", "arm64"]
+  }
+
+  name = "${arch}"
   context = "src"
-  platforms = ["linux/amd64", "linux/arm64"]
-  tag = [BUILD_TAG]
-  load = true
+
+  platforms = ["linux/${arch}"]
+  tag = ["repro:${arch}"]
 
   output = [
-    "type=image,name=${BUILD_TAG},rewrite-timestamp=true",
-    "type=docker,name=${BUILD_TAG},rewrite-timestamp=true",
+    "type=image,name=repro-${arch},rewrite-timestamp=true",
   ]
 
   cache-to = [{
     type = "s3"
     region = "us-west-2"
     bucket = "kaixo-buildx-cache"
-    name = "${BUILD_TAG}"
+    name = "repro"
+    prefix = "${arch}"
     mode = "max"
   }]
   
@@ -44,34 +49,12 @@ target "build" {
     type = "s3"
     region = "us-west-2"
     bucket = "kaixo-buildx-cache"
-    name = "${BUILD_TAG}"
+    name = "repro"
+    prefix = "${arch}"
   }]
 
   args = {
     SOURCE_DATE_EPOCH = "${EPOCH}"
-  }
-}
-
-target "release" {
-  contexts = {
-    build = "target:build"
-  }
-
-  tag = [RELEASE_TAG]
-  platforms = ["linux/amd64", "linux/arm64"]
-  load = true
-  dockerfile-inline = <<EOF
-FROM build
-CMD ["/bin/sh"]
-EOF
-
-  output = [
-    "type=image,name=${RELEASE_TAG}",
-    "type=docker,name=${RELEASE_TAG}",
-  ]
-
-  args = {
-    SOURCE_DATE_EPOCH = "${NOW}"
   }
 }
 
