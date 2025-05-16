@@ -2,6 +2,14 @@ group "default" {
   targets = ["build", "release"]
 }
 
+variable "COMMIT_TIMESTAMP" {
+  description = "Commit timestamp"
+}
+
+variable "NOW_TIMESTAMP" {
+  description = "Current timestamp"
+}
+
 target "build" {
   matrix = {
     arch = ["amd64", "arm64"]
@@ -11,8 +19,12 @@ target "build" {
   context = "src"
   platforms = ["linux/${arch}"]
   output = [
-    "type=image,name=${arch}",
+    "type=image,name=${arch},rewrite-timestamp=true",
   ]
+
+  args = {
+    SOURCE_DATE_EPOCH = "${COMMIT_TIMESTAMP}"
+  }
 
   cache-to = [{
       type = "s3"
