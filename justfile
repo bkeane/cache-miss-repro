@@ -16,7 +16,7 @@ ls:
     aws s3 ls s3://kaixo-buildx-cache/
 
 up: 
-    docker buildx create --driver=docker-container --name=container-builder --use
+    docker buildx create --driver=docker-container --name=container-builder --platform=linux/arm64,linux/amd64 --use
 
 down:
     docker buildx rm container-builder
