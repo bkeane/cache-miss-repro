@@ -18,8 +18,12 @@ target "build" {
   name = "${arch}"
   context = "src"
   platforms = ["linux/${arch}"]
+  tag = ["${arch}"]
+  load = true 
+  
   output = [
     "type=image,name=${arch},rewrite-timestamp=true",
+    "type=docker,name=${arch},rewrite-timestamp=true",
   ]
 
   args = {

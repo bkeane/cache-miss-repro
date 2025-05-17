@@ -22,6 +22,16 @@ jobs:
           role-to-assume: arn:aws:iam::677771948337:role/cache-miss-repro-role
           role-session-name: assume-role-session
           aws-region: us-west-2
+      
+      - name: install dive
+        id: install-dive
+        run: |
+          curl -fOL "https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_arm64.deb"
+          sudo apt install ./dive_0.13.1_linux_arm64.deb
+
+      - name: install just
+        id: install-just
+        uses: extractions/setup-just@v3
 
       - name: setup containerd
         uses: docker/setup-docker-action@v4
@@ -41,10 +51,6 @@ jobs:
           version: v0.23.0
           use: false
 
-      - name: install just
-        id: install-just
-        uses: extractions/setup-just@v3
-
       - name: checkout
         id: checkout
         uses: actions/checkout@v4
@@ -61,19 +67,12 @@ jobs:
         id: build
         run: |
           just
-      
-      - name: options
-        id: options
-        run: |
-          docker buildx bake --print
 
-      - name: du
-        id: du
+      - name: inspect
+        id: inspect
         run: |
-          docker buildx du --verbose
-      
-      - name: metadata
-        id: metadata
-        run: |
-          cat metadata.json
+          dive amd64:latest --json > amd64.json
+          dive arm64:latest --json > arm64.json
+          aws s3 cp amd64.json s3://kaixo-buildx-cache/amd64.json
+          aws s3 cp arm64.json s3://kaixo-buildx-cache/arm64.json
 
