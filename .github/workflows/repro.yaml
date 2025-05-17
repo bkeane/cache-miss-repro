@@ -71,8 +71,8 @@ jobs:
       - name: inspect
         id: inspect
         run: |
-          dive amd64:latest --json > amd64.json
-          dive arm64:latest --json > arm64.json
+          dive amd64:latest --json amd64.json
+          dive arm64:latest --json arm64.json
           aws s3 cp amd64.json s3://kaixo-buildx-cache/amd64.json
           aws s3 cp arm64.json s3://kaixo-buildx-cache/arm64.json
 
