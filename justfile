@@ -2,9 +2,9 @@ export COMMIT_TIMESTAMP := `git log -1 --pretty=%ct`
 export NOW_TIMESTAMP := `date +%s`
 
 default:
-    echo "COMMIT_TIMESTAMP: {{COMMIT_TIMESTAMP}}"
-    echo "NOW_TIMESTAMP: {{NOW_TIMESTAMP}}"
-    docker buildx bake --progress=plain
+    docker buildx bake --progress=plain \
+    --metadata-file metadata.json \
+    --debug
 
 clean:
     docker system prune -f -a

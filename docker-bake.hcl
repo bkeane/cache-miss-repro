@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["build", "release"]
+  targets = ["build"]
 }
 
 variable "COMMIT_TIMESTAMP" {
@@ -15,35 +15,32 @@ target "build" {
     arch = ["amd64", "arm64"]
   }
 
-  load = true
-
   name = "${arch}"
   context = "src"
   platforms = ["linux/${arch}"]
   output = [
     "type=image,name=${arch},rewrite-timestamp=true",
-    "type=docker,name=${arch},rewrite-timestamp=true",
   ]
 
   args = {
     SOURCE_DATE_EPOCH = "0"
   }
 
-  cache-to = [{
-      type = "s3"
-      region = "us-west-2"
-      bucket = "kaixo-buildx-cache"
-      name = "repro"
-      prefix = "${arch}"
-      mode = "max"
-  }]
+ cache-to = [{
+     type = "s3"
+     region = "us-west-2"
+     bucket = "kaixo-buildx-cache"
+     name = "repro"
+     prefix = "${arch}/"
+     mode = "max"
+ }]
   
   cache-from = [{
     type = "s3"
     region = "us-west-2"
     bucket = "kaixo-buildx-cache"
     name = "repro"
-    prefix = "${arch}"
+    prefix = "${arch}/"
   }]
 }
 

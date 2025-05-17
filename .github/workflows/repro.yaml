@@ -61,4 +61,19 @@ jobs:
         id: build
         run: |
           just
+      
+      - name: options
+        id: options
+        run: |
+          docker buildx bake --print
+
+      - name: du
+        id: du
+        run: |
+          docker buildx du --verbose
+      
+      - name: metadata
+        id: metadata
+        run: |
+          cat metadata.json
 
