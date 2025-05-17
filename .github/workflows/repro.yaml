@@ -39,7 +39,7 @@ jobs:
         uses: docker/setup-buildx-action@v3 
         with:
           version: v0.23.0
-          user: false
+          use: false
 
       - name: install just
         id: install-just
